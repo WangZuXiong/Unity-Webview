@@ -9,14 +9,14 @@ public class UnityWebViewDemo : MonoBehaviour
     public Button m_ButtonUnityCallWebView;
     public Text m_Text;
     private UniWebView m_UniWebView;
-    private string url;
+    //！！！！需要将这个html文件放到服务器，因为uniwebview只支持http协议
+    private string url = "http://47.89.12.59/Test/HtmlDemo.html";
 
     private void Awake()
     {
         m_ButtonEnter.onClick.AddListener(LoadUrl);
         m_ButtonClose.onClick.AddListener(CloseUrl);
         m_ButtonUnityCallWebView.onClick.AddListener(UnityCallWebView);
-        url = Application.dataPath + "/HtmlDemo.html";
         m_InputField.text = url;
     }
 
@@ -31,10 +31,9 @@ public class UnityWebViewDemo : MonoBehaviour
             return;
         }
 
-        m_UniWebView = UniWebViewHelper.CreateUniWebView(gameObject, url, 300, 0, 50, 0);
+        m_UniWebView = UniWebViewHelper.CreateUniWebView(gameObject, url, 200, 0, 0, 0);
         m_UniWebView.OnLoadComplete += OnLoadComplete;
         m_UniWebView.OnReceivedMessage += OnReceivedMessage;
-        m_UniWebView.OnEvalJavaScriptFinished += OnEvalJavaScriptFinished;
         m_UniWebView.Load();
     }
     private void OnLoadComplete(UniWebView webView, bool success, string errorMessage)
@@ -56,7 +55,6 @@ public class UnityWebViewDemo : MonoBehaviour
         //反注册
         m_UniWebView.OnLoadComplete -= OnLoadComplete;
         m_UniWebView.OnReceivedMessage -= OnReceivedMessage;
-        m_UniWebView.OnEvalJavaScriptFinished -= OnEvalJavaScriptFinished;
         Destroy(m_UniWebView);
     }
     /// <summary>
@@ -78,16 +76,4 @@ public class UnityWebViewDemo : MonoBehaviour
         string javaScript = "pupop();";
         m_UniWebView.EvaluatingJavaScript(javaScript);
     }
-
-    /// <summary>
-    /// Unity Call WebView回调
-    /// </summary>
-    /// <param name="webView"></param>
-    /// <param name="result"></param>
-    private void OnEvalJavaScriptFinished(UniWebView webView, string result)
-    {
-        Debug.Log(">>>OnEvalJavaScriptFinished");
-    }
-
-
 }
